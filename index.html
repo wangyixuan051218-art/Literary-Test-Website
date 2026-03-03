@@ -3,172 +3,160 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>隐藏人格测试</title>
+<title>专业人格测评系统</title>
+
 <style>
 body {
-  font-family: "Helvetica Neue", sans-serif;
-  background: linear-gradient(135deg, #f5f7fa, #e4ecf7);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: #f4f7fb;
   margin: 0;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
 }
+
 .container {
   background: white;
-  padding: 40px;
-  border-radius: 20px;
-  max-width: 600px;
   width: 90%;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  max-width: 600px;
+  padding: 40px;
+  border-radius: 18px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.08);
+}
+
+h1 {
   text-align: center;
-  transition: all 0.5s ease;
+  color: #1a365d;
+  margin-bottom: 20px;
 }
-h1 { margin-bottom: 10px; }
-.progress {
-  height: 8px;
-  background: #eee;
-  border-radius: 10px;
-  margin: 20px 0;
-  overflow: hidden;
-}
+
 .progress-bar {
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.progress {
   height: 100%;
   width: 0%;
-  background: #4a90e2;
+  background: #2b6cb0;
   transition: width 0.3s ease;
 }
+
+.question {
+  font-size: 18px;
+  margin-bottom: 20px;
+  color: #2d3748;
+}
+
 button {
-  display: block;
   width: 100%;
+  padding: 14px;
   margin: 10px 0;
-  padding: 15px;
-  border: none;
-  border-radius: 12px;
-  background: #4a90e2;
-  color: white;
+  border-radius: 10px;
+  border: 1px solid #cbd5e0;
+  background: white;
   font-size: 16px;
   cursor: pointer;
   transition: 0.3s;
 }
-button:hover { background: #357abd; }
-.hidden { display: none; }
+
+button:hover {
+  background: #2b6cb0;
+  color: white;
+  border-color: #2b6cb0;
+}
+
 .result {
+  text-align: center;
   font-size: 22px;
-  margin: 20px 0;
+  color: #1a365d;
+  margin-top: 20px;
 }
 </style>
 </head>
+
 <body>
 
-<div class="container" id="app">
-  <h1 id="title">测出你的隐藏人格类型</h1>
-  <p id="question">点击开始测试</p>
+<div class="container">
+  <h1>人格测评</h1>
 
-  <div class="progress hidden" id="progressBox">
-    <div class="progress-bar" id="progressBar"></div>
+  <div class="progress-bar">
+    <div class="progress" id="progress"></div>
   </div>
 
-  <div id="buttons">
-    <button onclick="startTest()">开始测试</button>
+  <div id="quiz">
+    <div class="question" id="questionText"></div>
+    <button onclick="selectAnswer('E')" id="btnA"></button>
+    <button onclick="selectAnswer('I')" id="btnB"></button>
   </div>
+
+  <div class="result" id="result"></div>
 </div>
 
 <script>
 const questions = [
-  {q:"你更喜欢周末？", a:"和朋友聚会", b:"独处放松", typeA:"E", typeB:"I"},
-  {q:"做决定时你更依赖？", a:"逻辑分析", b:"内心感觉", typeA:"T", typeB:"F"},
-  {q:"你更像？", a:"计划型", b:"随性型", typeA:"J", typeB:"P"},
-  {q:"面对新环境你会？", a:"主动适应", b:"先观察", typeA:"E", typeB:"I"},
-  {q:"你更重视？", a:"现实结果", b:"理想可能", typeA:"S", typeB:"N"},
-  {q:"遇到问题时？", a:"理性解决", b:"情绪共鸣", typeA:"T", typeB:"F"},
-  {q:"你做事节奏？", a:"有条理", b:"灵活变化", typeA:"J", typeB:"P"},
-  {q:"社交后你通常？", a:"精力提升", b:"需要恢复", typeA:"E", typeB:"I"},
-  {q:"你更相信？", a:"经验", b:"直觉", typeA:"S", typeB:"N"},
-  {q:"你更像领导者还是支持者？", a:"领导者", b:"支持者", typeA:"E", typeB:"I"},
-  // 继续自动生成到40题
+  {
+    text: "在聚会中，你更倾向于：",
+    A: "主动与很多人交谈",
+    B: "与少数熟人深聊"
+  },
+  {
+    text: "周末你更愿意：",
+    A: "参加社交活动",
+    B: "独处放松"
+  },
+  {
+    text: "做决定时你更依赖：",
+    A: "逻辑分析",
+    B: "情感感受"
+  }
 ];
 
-while(questions.length < 40){
-  questions.push({
-    q:"你更倾向于哪种状态？",
-    a:"高效执行",
-    b:"深度思考",
-    typeA:["E","T","J","S"][Math.floor(Math.random()*4)],
-    typeB:["I","F","P","N"][Math.floor(Math.random()*4)]
-  });
+let currentQuestion = 0;
+let scoreE = 0;
+let scoreI = 0;
+
+function loadQuestion(){
+  document.getElementById("questionText").innerText = questions[currentQuestion].text;
+  document.getElementById("btnA").innerText = questions[currentQuestion].A;
+  document.getElementById("btnB").innerText = questions[currentQuestion].B;
+
+  let progressPercent = ((currentQuestion) / questions.length) * 100;
+  document.getElementById("progress").style.width = progressPercent + "%";
 }
 
-let index = 0;
-let scores = {E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0};
+function selectAnswer(type){
+  if(type === "E"){
+    scoreE++;
+  } else {
+    scoreI++;
+  }
 
-function startTest(){
-  document.getElementById("progressBox").classList.remove("hidden");
-  showQuestion();
-}
+  currentQuestion++;
 
-function showQuestion(){
-  const q = questions[index];
-  document.getElementById("title").innerText = `第 ${index+1} / 40 题`;
-  document.getElementById("question").innerText = q.q;
-  document.getElementById("buttons").innerHTML = `
-    <button onclick="answer('A')">${q.a}</button>
-    <button onclick="answer('B')">${q.b}</button>
-  `;
-  updateProgress();
-}
-
-function answer(choice){
-  const q = questions[index];
-  if(choice === 'A'){ scores[q.typeA]++; }
-  else { scores[q.typeB]++; }
-  index++;
-  if(index < questions.length){
-    showQuestion();
-  }else{
+  if(currentQuestion < questions.length){
+    loadQuestion();
+  } else {
     showResult();
   }
 }
 
-function updateProgress(){
-  const percent = (index / questions.length) * 100;
-  document.getElementById("progressBar").style.width = percent + "%";
-}
-
 function showResult(){
-  const type =
-    (scores.E>=scores.I?"E":"I") +
-    (scores.S>=scores.N?"S":"N") +
-    (scores.T>=scores.F?"T":"F") +
-    (scores.J>=scores.P?"J":"P");
+  document.getElementById("quiz").style.display = "none";
+  document.getElementById("progress").style.width = "100%";
 
-  const descriptions = {
-    "INTJ":"战略型人格：冷静理性，善于规划未来。",
-    "ENFP":"自由探索者：热情、有创造力、充满好奇心。",
-    "INFJ":"神秘洞察者：敏感且深度思考型人格。",
-    "ENTP":"创意辩论家：思维敏捷，点子很多。",
-    "ISFJ":"守护型人格：温和可靠，重视责任。",
-    "ESTP":"行动派人格：果断、直接、喜欢挑战。",
-    "INFP":"理想主义者：重情感，追求意义。",
-    "ESTJ":"执行管理者：组织能力强，务实高效。"
-  };
-
-  document.getElementById("title").innerText = "你的隐藏人格类型";
-  document.getElementById("question").innerHTML = `
-    <div class="result">人格类型：${type}</div>
-    <p>${descriptions[type] || "独特的混合型人格，兼具多维特质。"}</p>
-  `;
-  document.getElementById("buttons").innerHTML = `
-    <button onclick="shareResult('${type}')">分享结果</button>
-    <button onclick="location.reload()">重新测试</button>
-  `;
+  if(scoreE > scoreI){
+    document.getElementById("result").innerText = "你的性格偏向：外向型 (E)";
+  } else {
+    document.getElementById("result").innerText = "你的性格偏向：内向型 (I)";
+  }
 }
 
-function shareResult(type){
-  const text = `我的人格测试结果是：${type}！快来测测你的隐藏人格！`;
-  navigator.clipboard.writeText(text);
-  alert("结果已复制，可直接分享！");
-}
+loadQuestion();
 </script>
 
 </body>
