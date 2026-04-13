@@ -5,14 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>文學靈魂棲息地測評</title>
     <style>
-        /* 基礎樣式與文學質感 [cite: 1-7] */
         :root {
-            --bg-color: #F5F5DC; /* 默認大地星雲色 [cite: 5] */
+            --bg-color: #F5F5DC; 
             --text-color: #333;
             --accent-color: #555;
         }
         body {
-            font-family: "Source Serif Pro", "SimSun", "Songti SC", serif; /* 襯線體風格 [cite: 7] */
+            font-family: "Source Serif Pro", "SimSun", "Songti SC", serif;
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
@@ -20,32 +19,31 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            transition: background-color 0.5s ease;
+            transition: background-color 0.8s ease;
         }
-        #app { width: 90%; max-width: 600px; padding: 40px 0; }
-        
-        /* 首頁與題目樣式 */
-        .card { background: rgba(255,255,255,0.4); padding: 30px; border-radius: 2px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .title { font-size: 24px; text-align: center; letter-spacing: 4px; margin-bottom: 40px; }
-        .question-text { font-size: 18px; line-height: 1.6; margin-bottom: 30px; }
+        #app { width: 90%; max-width: 650px; padding: 40px 0; }
+        .card { background: rgba(255,255,255,0.6); padding: 30px; border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .title { font-size: 24px; text-align: center; letter-spacing: 4px; margin-bottom: 40px; font-weight: bold; }
+        .question-text { font-size: 18px; line-height: 1.8; margin-bottom: 30px; text-align: justify; }
         .option-btn { 
-            display: block; width: 100%; padding: 15px; margin: 10px 0;
+            display: block; width: 100%; padding: 18px; margin: 12px 0;
             border: 1px solid var(--accent-color); background: transparent;
             cursor: pointer; text-align: left; font-family: inherit; font-size: 16px;
+            transition: all 0.3s;
         }
-        .option-btn:hover { background: rgba(0,0,0,0.05); }
+        .option-btn:hover { background: rgba(0,0,0,0.08); }
 
-        /* 結果頁視覺邏輯 [cite: 8-23] */
-        .result-header { text-align: center; margin-bottom: 30px; }
-        .writer-title { font-size: 32px; font-weight: bold; letter-spacing: 6px; }
-        .writer-sub { color: #777; font-size: 14px; margin-top: 10px; }
-        .portrait-text { line-height: 1.8; margin: 30px 0; text-align: justify; }
-        .golden-sentence { font-size: 22px; font-weight: bold; border-left: 3px solid #333; padding-left: 15px; margin: 40px 0; }
-        .source { text-align: right; color: #555; }
+        /* 結果頁樣式 [cite: 7-23] */
+        .writer-title { font-size: 36px; font-weight: bold; letter-spacing: 8px; text-align: center; margin-top: 20px; }
+        .writer-sub { color: #666; font-size: 16px; text-align: center; margin: 15px 0 40px; }
+        .portrait-text { line-height: 2; font-size: 17px; text-align: justify; white-space: pre-wrap; margin-bottom: 40px; }
+        .golden-sentence { font-size: 24px; font-weight: bold; line-height: 1.5; border-left: 4px solid #333; padding-left: 20px; margin: 50px 0 20px; }
+        .source { text-align: right; color: #555; font-size: 15px; margin-bottom: 60px; }
         
-        /* 分享與導流區 [cite: 32-34] */
-        .footer-area { margin-top: 50px; border-top: 1px solid #ccc; padding-top: 20px; display: flex; align-items: center; justify-content: space-between; }
-        .qrcode-mock { width: 80px; height: 80px; background: #ddd; display: flex; align-items: center; text-align: center; font-size: 10px; color: #666; }
+        /* 分享圖佈局 [cite: 24-34] */
+        .footer-area { border-top: 1px solid rgba(0,0,0,0.1); padding-top: 30px; display: flex; align-items: center; justify-content: space-between; }
+        .footer-info { font-size: 13px; color: #888; line-height: 1.6; }
+        .xhs-qr { width: 90px; height: 90px; border: 1px solid #eee; }
     </style>
 </head>
 <body>
@@ -53,118 +51,170 @@
 <div id="app">
     <div id="quiz-container">
         <div class="title">文學靈魂棲息地</div>
-        <div id="question-box" class="card">
-            <div id="q-text" class="question-text">正在加載題目...</div>
+        <div class="card">
+            <div id="q-text" class="question-text">正在加載靈魂的索引...</div>
             <div id="options-container"></div>
         </div>
     </div>
 
     <div id="result-container" style="display: none;">
         <div class="card">
-            <div id="share-content">
-                <div class="result-header">
-                    <div id="res-title" class="writer-title"></div>
-                    <div id="res-sub" class="writer-sub"></div>
-                </div>
-                <div id="res-portrait" class="portrait-text"></div>
-                <div id="res-golden" class="golden-sentence"></div>
-                <div id="res-work" class="source"></div>
+            <div class="result-header">
+                <div id="res-title" class="writer-title"></div>
+                <div id="res-sub" class="writer-sub"></div>
             </div>
+            <div id="res-portrait" class="portrait-text"></div>
+            <div id="res-golden" class="golden-sentence"></div>
+            <div id="res-work" class="source"></div>
             
             <div class="footer-area">
-                <div style="font-size: 12px; color: #888;">《文學人格側寫》<br>在小紅書，遇見更多靈魂共鳴</div>
-                <img src="YOUR_XHS_QR_CODE_URL" alt="二維碼" style="width: 80px; height: 80px; background: #eee;">
+                <div class="footer-info">
+                    《文學人格側寫》<br>
+                    基於 20 項意象特徵精確映射<br>
+                    在小紅書，遇見更多靈魂共鳴
+                </div>
+                <img src="YOUR_QR_CODE_IMAGE_PATH" class="xhs-qr" alt="QR Code">
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    // 完整的 16 類作家文案數據 
-    const WRITERS = {
-        "海子": { title: "麥田詩人", portrait: "你的靈魂像一片遼闊的原野。你對世界的感受純粹而熾熱，像陽光、麥田和風。你相信詩意存在於一切事物之中：天空、河流、遠方，以及人心。", golden: "「天空一無所有，為何給我安慰。」", work: "代表作：《海子的詩》", nebula: "FIRE_DISTANCE" },
-        "三毛": { title: "遠方旅人", portrait: "你天生對世界充滿好奇。人生不是一條既定的道路，而是一場不斷展開的遠行。你的靈魂像風一樣——自由、熱烈、永遠在路上。", golden: "「心若沒有棲息的地方，到哪裏都是流浪。」", work: "代表作：《撒哈拉的故事》", nebula: "FIRE_DISTANCE" },
-        "張愛玲": { title: "月光洞察者", portrait: "你對人性的觀察細致而冷靜。你像一個安靜的旁觀者，在人世的燈火中洞察一切。這種敏銳讓你既清醒，也深情。", golden: "「因為懂得，所以慈悲。」", work: "代表作：《傾城之戀》", nebula: "MOON_MIRROR" },
-        "林清玄": { title: "清歡生活家", portrait: "你擁有一种柔軟而清明的內心。你習慣從日常生活的小事裏體會人生的智慧：一杯茶、一場雨、一次簡單的相遇。", golden: "「以清淨心看世界，以歡喜心過生活。」", work: "代表作：《人生最美是清歡》", nebula: "EARTH_FIREWORKS" },
-        "汪曾祺": { title: "人間煙火者", portrait: "你對生活有一種溫潤的感受力。你相信人生不必轟轟烈烈，只要還有煙火氣，就值得慢慢生活。", golden: "「一定要愛着點什麼，恰似草木對光陰的鐘情。」", work: "代表作：《人間草木》", nebula: "EARTH_FIREWORKS" },
-        "史鐵生": { title: "溫柔哲人", portrait: "你知道命運有時會殘酷，但人依然可以溫柔地活着。你的精神像一座安靜的庭院：沉靜、堅韌、充滿光。", golden: "「死是一件不必急于求成的事。」", work: "代表作：《我與地壇》", nebula: "EARTH_FIREWORKS" },
-        "黑塞": { title: "自我覺醒者", portrait: "你的一生像一段尋找自我的旅程。成長對你來說不是年齡的變化，而是一場又一場的精神覺醒。", golden: "「每個人的生命都是通向自己的旅程。」", work: "代表作：《悉達多》", nebula: "ABYSS_DAWN" },
-        "加謬": { title: "荒誕見證者", portrait: "你清醒地知道世界並不完美。你不逃避荒誕，而是在其中尋找勇氣。你的精神是一種安靜而堅定的反抗。", golden: "「在隆冬，我終於知道，我身上有一個不可戰勝的夏天。」", work: "代表作：《局外人》", nebula: "ABYSS_DAWN" }
-        // ... 其他作家 ID 同理擴充
+    // 1. 文學人格數據庫 
+    const WRITERS_DATA = {
+        "汪曾祺": { name: "人間煙火者", work: "《人間草木》", golden: "「一定要愛著點什麼，恰似草木對光陰的鍾情。」", portrait: "你對生活有一種溫潤的感受力。在別人匆忙走過的地方，你卻會停下來看看。街巷、食物、人情、舊時光——這些細微而平凡的東西，在你眼中都帶著溫度。你相信人生不必轟轟烈烈，只要還有煙火氣，就值得慢慢生活。" },
+        "三毛": { name: "遠方旅人", work: "《撒哈拉的故事》", golden: "「心若沒有棲息的地方，到哪裡都是流浪。」", portrait: "你天生對世界充滿好奇。人生不是一條既定的道路，而是一場不斷展開的遠行。你願意走向陌生的地方，也願意遇見不同的人與故事。你的靈魂像風一樣——自由、熱烈、永遠在路上。" },
+        "海子": { name: "麥田詩人", work: "《海子的詩》", golden: "「天空一無所有，為何給我安慰。」", portrait: "你的靈魂像一片遼闊的原野。你對世界的感受純粹而熾熱，像陽光、麥田和風。你相信詩意存在於一切事物之中：天空、河流、遠方，以及人心。很多時候，你的情感比語言更遼闊。" },
+        "張愛玲": { name: "月光洞察者", work: "《傾城之戀》", golden: "「因為懂得，所以慈悲。」", portrait: "你對人性的觀察細致而冷靜。在別人只看到愛情時，你卻看見其中的複雜與微妙。情感、欲望、誤解與依賴，在你眼中都顯得真實而具體。你像一個安靜的旁觀者，在人世的燈火中洞察一切。" },
+        "林清玄": { name: "清歡生活家", work: "《人生最美是清歡》", golden: "「以清淨心看世界，以歡喜心過生活。」", portrait: "你擁有一種柔軟而清明的內心。即使世界喧鬧，你依然願意保持平靜。你習慣從日常生活的小事裡體會人生的智慧：一杯茶、一場雨、一次簡單的相遇。你的氣質像清晨的空氣——溫和、寧靜，又充滿光。" },
+        "史鐵生": { name: "溫柔哲人", work: "《我與地壇》", golden: "「死是一件不必急於求成的事。」", portrait: "你對生命有一種深沈的理解。你知道命運有時會殘酷，但人依然可以溫柔地活著。在困境中，你習慣尋找意義；在孤獨中，你學會與世界和解。你的精神像一座安靜的庭院：沈靜、堅韌、充滿光。" },
+        "黑塞": { name: "自我覺醒者", work: "《悉達多》", golden: "「每個人的生命都是通向自己的旅程。」", portrait: "你的一生像一段尋找自我的旅程。你不滿足於表面的生活，總想理解更深的自己。成長對你來說不是年齡的變化，而是一場又一場的精神覺醒。你相信每個人都必須走向真正的自己。" },
+        "加謬": { name: "荒誕見證者", work: "《局外人》", golden: "「在隆冬，我終於知道，我身上有一個不可戰勝的夏天。」", portrait: "你清醒地知道世界並不完美。許多事情沒有答案，許多規則並不合理。但正因為如此，你更加珍視人的尊嚴與自由。你不逃避荒誕，而是在其中尋找勇氣。你的精神是一種安靜而堅定的反抗。" },
+        "卡夫卡": { name: "迷宮思考者", work: "《變形記》", golden: "「我和世界之間隔著一層透明的牆。」", portrait: "你對世界的感受常常帶著一點疏離。在別人習以為常的秩序中，你卻看到隱藏的矛盾。現實像一座複雜的迷宮，規則看似合理，卻又讓人迷失方向。你敏銳而清醒，因此總能看見世界深處的結構。" },
+        "王小波": { name: "自由思想家", work: "《黃金時代》", golden: "「人的一切痛苦，本质上都是对自己无能的愤怒。」", portrait: "你擁有獨立而鋒利的思維。你不喜歡被既定規則束縛，也不願輕易接受權威。幽默和理性是你的武器。即使面對荒誕的世界，你也能保持清醒。對你來說，自由不僅是生活方式，更是一種精神態度。" },
+        "伍爾夫": { name: "意識漫遊者", work: "《一間自己的房間》", golden: "「生活不是一系列燈塔般對稱的事件，而是一圈光暈。」", portrait: "你的意識像海潮一樣流動。你對時間、記憶與情緒有著獨特的感知。在別人匆忙生活的時候，你常常停下來思考：時間究竟如何流逝，記憶如何改變我們。你的世界是內心的海洋，深邃、細膩，又充滿回聲。" },
+        "村上春樹": { name: "孤獨漫遊者", work: "《海邊的卡夫卡》", golden: "「當你穿過了暴風雨，你就不再是原來那個人。」", portrait: "你並不害怕孤獨。相反，在獨處的時候，你更容易聽見自己的聲音。城市的夜晚、音樂、長長的街道——這些安靜的場景常常與你產生共鳴。現實在你眼中總帶著一點夢境感。" },
+        "托爾斯泰": { name: "靈魂史詩者", work: "《戰爭與和平》", golden: "「人生的一切變化，一切魅力，一切美都是由光明和陰影構成的。」", portrait: "你習慣在宏大的世界中思考人生。家庭、歷史、社會、愛情——這些複雜關係在你眼中彼此交織。你相信人並不是孤立存在的，每個人都生活在更廣闊的命運之中。世界在你眼中像一部長篇小說。" },
+        "陀思妥耶夫斯基": { name: "深淵探索者", work: "《罪與罰》", golden: "「人性並不簡單，每個人都在掙扎與尋找之中生活。」", portrait: "你對靈魂深處的問題非常敏感。善與惡、罪與救贖，這些問題在你心中始終存在。你知道人性並不簡單，每個人都在掙扎與尋找之中生活。正因為如此，你更渴望理解生命真正的意義。" },
+        "簡媜": { name: "山海書寫者", work: "《水問》", golden: "「文字可以療癒心靈，世界始終保留著溫柔的一面。」", portrait: "你對自然與生命有細膩的感受。山、海、風、雨，在你心中都帶著情感。你相信文字可以療癒心靈，也相信世界始終保留著溫柔的一面。你的氣質像山間清晨：寧靜、明亮、充滿呼吸感。" },
+        "杜拉斯": { name: "愛欲敘事者", work: "《情人》", golden: "「愛之於我，不是肌膚之親，不是一蔬一飯。」", portrait: "你對情感的感知極其敏銳。你知道愛情從來不是簡單的甜蜜，它往往帶著記憶、欲望與時間的影子。你的人生像一段緩慢流動的敘事——安靜、迷人，又充滿深情。" }
     };
 
-    const NEBULAS = {
-        EARTH_FIREWORKS: "#F5F5DC", FIRE_DISTANCE: "#FDF5E6", MOON_MIRROR: "#ECEFF1", ABYSS_DAWN: "#DCDCDC" 
+    // 星雲背景配置 [cite: 5]
+    const NEBULA_STYLE = {
+        "汪曾祺": "#F5F5DC", "林清玄": "#F5F5DC", "簡媜": "#F5F5DC", "史鐵生": "#F5F5DC",
+        "海子": "#FDF5E6", "三毛": "#FDF5E6", "杜拉斯": "#FDF5E6",
+        "張愛玲": "#ECEFF1", "王小波": "#ECEFF1", "村上春樹": "#ECEFF1",
+        "加謬": "#37474F", "黑塞": "#37474F", "卡夫卡": "#37474F", "托爾斯泰": "#37474F", "陀思妥耶夫斯基": "#37474F", "伍爾夫": "#37474F"
     };
 
-    // 20道題目算法映射 [cite: 51, 80-114]
+    // 2. 完整的 20 道題目數據 
     const QUESTIONS = [
-        { q: "假如你是世界起始的一段文字，你希望自己被書寫在：", options: { A: "汪曾祺", B: "三毛", C: "王小波", D: "卡夫卡" } },
-        { q: "凌晨三點，你突然醒來，窗外寂靜無聲。那一刻你感覺：", options: { A: "林清玄", B: "杜拉斯", C: "村上春樹", D: "黑塞" } },
-        { q: "面對『遺憾』這個詞，你的底色更傾向於：", options: { A: "簡媜", B: "海子", C: "張愛玲", D: "史鐵生" } }
-        // ... 此處需完整填入 20 題
+        { q: "假如你是世界起始的一段文字，你希望自己被書寫在：", options: { A: "汪曾祺", B: "三毛", C: "王小波", D: "卡夫卡" }, texts: ["泛黃的家譜或菜譜上", "一張隨風遠方的空白信箋", "鋒利的觀察筆記", "幽深迷宮轉角處的石牆"] },
+        { q: "凌晨三點，你突然醒來，窗外寂靜無聲。那一刻你感覺：", options: { A: "林清玄", B: "杜拉斯", C: "村上春樹", D: "黑塞" }, texts: ["平凡的寧靜真好", "想立刻推門去看看深夜街道", "世界是場荒謬電影，我是觀眾", "感到巨大虛無，被世界遺忘"] },
+        { q: "面對『遺憾』這個詞，你的底色更傾向於：", options: { A: "簡媜", B: "海子", C: "張愛玲", D: "史鐵生" }, texts: ["隨風而去，人生最美是清歡", "未完成的流浪，未竟的熾熱", "清醒的裂痕，懂得所以慈悲", "漫長的救贖，死不必急於求成"] },
+        { q: "哪種色彩組合最能代表你內心的審美傾向？", options: { A: "汪曾祺", B: "海子", C: "張愛玲", D: "加謬" }, texts: ["嫩綠與米白，草木對光陰鍾情", "金色麥浪與藍天，純粹遼闊", "冷峻灰與透徹紫，高級疏離", "墨黑與微光，荒誕中尋勇氣"] },
+        { q: "在人際關係的『迷宮』裡，你通常扮演：", options: { A: "林清玄", B: "三毛", C: "張愛玲", D: "陀思妥耶夫斯基" }, texts: ["溫潤的協調者，愛點人情往來", "自由遊走者，哪裡都是流浪", "冷靜旁觀者，洞察複雜微妙", "沈靜思考者，尋找靈魂旅程"] },
+        { q: "如果你有一間『自己的房間』，你最希望窗戶正對著：", options: { A: "汪曾祺", B: "三毛", C: "村上春樹", D: "伍爾夫" }, texts: ["生活氣息的街巷、老樹飛鳥", "廣袤風沙的撒哈拉或原野", "繁華卻透著冷漠的都市流光", "深邃、永恆波動、充滿回聲的海"] },
+        { q: "面對生活中的『無意義』和『瑣碎』，你會：", options: { A: "林清玄", B: "杜拉斯", C: "王小波", D: "卡夫卡" }, texts: ["以清淨心看世界，生出情味", "打破沈悶，追求如火的體驗", "幽默理性解構，認為痛苦是無能", "現實隔著牆，在困惑中尋答案"] },
+        { q: "哪種嗅覺記憶最能喚起你的情感？", options: { A: "汪曾祺", B: "三毛", C: "張愛玲", D: "黑塞" }, texts: ["米飯香氣或草木清香", "乾燥沙漠風味或遠方塵土感", "考究香水餘味或陳年墨香", "帶濕氣泥土或森林冷冽"] },
+        { q: "你如何看待『時間』的流逝？", options: { A: "托爾斯泰", B: "三毛", C: "王小波", D: "伍爾夫" }, texts: ["溫柔的，一切變化構成美", "自由的，見證每一場遠行", "清醒的，剝離華麗留下真相", "流動的光暈，包裹記憶的海潮"] },
+        { q: "當你遇到讓你心動的事物，你通常會：", options: { A: "簡媜", B: "杜拉斯", C: "張愛玲", D: "陀思妥耶夫斯基" }, texts: ["安靜欣賞，以歡喜心生活", "熱烈追求，不顧一切交融", "隔著距離端詳，享受微妙張力", "陷入沈思，理解背後命運意義"] },
+        { q: "以下哪個詞，是你精神世界的『違禁詞』？", options: { A: "林清玄", B: "海子", C: "王小波", D: "史鐵生" }, texts: ["喧囂", "停滯", "盲從", "淺薄"] },
+        { q: "假設生命是一場敘事，你希望你的敘事風格是：", options: { A: "汪曾祺", B: "海子", C: "張愛玲", D: "托爾斯泰" }, texts: ["溫潤平淡，如草木般自然", "浪漫純粹，如詩歌般熾熱", "冷峻細緻，如傾城之戀透徹", "深沈厚重，交織光明與陰影"] },
+        { q: "在你感到精神疲憊時，哪種方式能真正治癒你？", options: { A: "汪曾祺", B: "三毛", C: "王小波", D: "黑塞" }, texts: ["做頓飯，感受平凡的溫度", "去陌生地方，坐在長椅上", "寫文字解構情緒", "讀自我覺醒的書，重塑自己"] },
+        { q: "如果要把你的靈魂比作一種自然元素，你覺得是：", options: { A: "簡媜", B: "海子", C: "村上春樹", D: "陀思妥耶夫斯基" }, texts: ["細雨或和煦晨光", "掠過麥田的風或火焰", "月光下冷鏡或鋒利冰層", "礦石或緩慢流淌的深泉"] },
+        { q: "對於『成功』，你內心深處最真實的看法是：", options: { A: "林清玄", B: "杜拉斯", C: "王小波", D: "史鐵生" }, texts: ["平安、清淨、有情味過一生", "足夠多地方，足夠多真實體驗", "思維獨立自由，沒被愚蠢吞噬", "穿過暴風雨，認出真正的自己"] },
+        { q: "當你觀察路邊的老建築，你首先想到的是：", options: { A: "簡媜", B: "三毛", C: "卡夫卡", D: "托爾斯泰" }, texts: ["平凡人家發生過的故事", "歷史感和通往的遠方", "都市中的格格不入與荒謬", "見證的命運輪迴與時光"] },
+        { q: "哪種人際狀態讓你感到最舒適？", options: { A: "林清玄", B: "海子", C: "張愛玲", D: "加謬" }, texts: ["平常心相待，君子之交淡如水", "獨立靈魂，為愛熱烈相擁", "互相懂得，慈悲的默契", "深淵處相逢，探討生命意義"] },
+        { q: "假設你可以選擇一種『非人類』的存在方式，你會選：", options: { A: "簡媜", B: "三毛", C: "村上春樹", D: "伍爾夫" }, texts: ["鍾情於光陰的草木", "自由飛翔、沒有棲息地的候鳥", "映照世間欲望的冷鏡", "承載萬物呼吸的海洋"] },
+        { q: "面對世界的『不完美』，你的姿態通常是：", options: { A: "史鐵生", B: "杜拉斯", C: "王小波", D: "加謬" }, texts: ["溫柔地活著，尋找小確幸", "離開這裡，去尋找心中淨土", "帶著諷刺微笑，清醒揭穿它", "安靜堅定的反抗，守護夏天"] },
+        { q: "總結你的靈魂傾向，你覺得它正棲息在：", options: { A: "林清玄", B: "海子", C: "村上春樹", D: "托爾斯泰" }, texts: ["清歡煙火的山間或街巷", "麥田、熱烈遠方與詩行", "月光下、獨立高台或疏離街道", "自我旅程、深邃庭院或迷宮"] }
     ];
 
-    let currentQ = 0;
+    let currentStep = 0;
     let scores = {};
-    Object.keys(WRITERS).forEach(name => scores[name] = 0);
+    Object.keys(WRITERS_DATA).forEach(k => scores[k] = 0);
 
-    function loadQuestion() {
-        if (currentQ >= QUESTIONS.length) {
-            showResult();
+    function startQuiz() {
+        showQuestion();
+    }
+
+    function showQuestion() {
+        if (currentStep >= QUESTIONS.length) {
+            calculateAndShowResult();
             return;
         }
-        const data = QUESTIONS[currentQ];
-        document.getElementById('q-text').innerText = `${currentQ + 1}. ${data.q}`;
+        const qData = QUESTIONS[currentStep];
+        document.getElementById('q-text').innerText = `${currentStep + 1}. ${qData.q}`;
         const container = document.getElementById('options-container');
         container.innerHTML = "";
         
-        const labels = { A: "A", B: "B", C: "C", D: "D" };
-        const optTexts = { 
-            0: ["泛黃的家譜或菜譜上", "空白信箋上", "觀察筆記裏", "幽深石牆上"],
-            // 需對應題目填寫選項文字內容 
-        };
-
-        ['A','B','C','D'].forEach((key, idx) => {
+        ['A','B','C','D'].forEach((opt, index) => {
             const btn = document.createElement('button');
             btn.className = "option-btn";
-            btn.innerText = optTexts[currentQ] ? optTexts[currentQ][idx] : "點擊選擇此項";
+            btn.innerText = qData.texts[index];
             btn.onclick = () => {
-                const writer = data.options[key];
-                if(scores[writer] !== undefined) scores[writer]++;
-                currentQ++;
-                loadQuestion();
+                const targetWriter = qData.options[opt];
+                scores[targetWriter]++;
+                currentStep++;
+                showQuestion();
             };
             container.appendChild(btn);
         });
     }
 
-    function showResult() {
+    function calculateAndShowResult() {
         let sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
-        const s1 = sorted[0];
+        const s1 = sorted[0]; // [name, score]
         const s2 = sorted[1];
 
-        // 判定邏輯 [cite: 52-63]
         document.getElementById('quiz-container').style.display = 'none';
         document.getElementById('result-container').style.display = 'block';
 
-        if (s1[1] <= 2) { // 離散判定：未完待續 [cite: 60-63]
-            document.getElementById('res-title').innerText = "未完待續者";
-            document.getElementById('res-portrait').innerText = "你的靈魂是一部長篇史詩，正處於光明與陰影交織的創作初期。";
-            return;
+        // 判定算法 
+        if (s1[1] <= 3) {
+            // 未完待續者 [cite: 60-63]
+            renderSeeker();
+        } else if (s1[1] - s2[1] <= 1) {
+            // 多重人格者 [cite: 57-59]
+            renderDualSoul(s1[0], s2[0]);
+        } else {
+            // 常規結果 [cite: 54-56]
+            renderSingleSoul(s1[0]);
         }
-
-        const writerData = WRITERS[s1[0]];
-        document.body.style.backgroundColor = NEBULAS[writerData.nebula]; // 切換星雲背景 [cite: 4]
-        
-        document.getElementById('res-title').innerText = writerData.title;
-        document.getElementById('res-sub').innerText = `原型作家 · ${s1[0]}`;
-        document.getElementById('res-portrait').innerText = writerData.portrait;
-        document.getElementById('res-golden').innerText = writerData.golden;
-        document.getElementById('res-work').innerText = writerData.work;
     }
 
-    loadQuestion();
+    function renderSingleSoul(writer) {
+        const data = WRITERS_DATA[writer];
+        document.body.style.backgroundColor = NEBULA_STYLE[writer] || "#F5F5DC";
+        document.getElementById('res-title').innerText = data.name;
+        document.getElementById('res-sub').innerText = `原型作家 · ${writer}`;
+        document.getElementById('res-portrait').innerText = data.portrait;
+        document.getElementById('res-golden').innerText = data.golden;
+        document.getElementById('res-work').innerText = `代表作：${data.work}`;
+    }
+
+    function renderDualSoul(w1, w2) {
+        const d1 = WRITERS_DATA[w1];
+        const d2 = WRITERS_DATA[w2];
+        document.body.style.backgroundColor = NEBULA_STYLE[w1] || "#F5F5DC";
+        document.getElementById('res-title').innerText = "多重人格者";
+        document.getElementById('res-sub').innerText = `${w1} 與 ${w2} 的共生靈魂`;
+        document.getElementById('res-portrait').innerText = `${d1.portrait}\n\n同時，${d2.portrait}`;
+        document.getElementById('res-golden').innerText = `${d1.golden}\n${d2.golden}`;
+        document.getElementById('res-work').innerText = `相關作品：${d1.work}、${d2.work}`;
+    }
+
+    function renderSeeker() {
+        document.body.style.background = "linear-gradient(45deg, #F5F5DC, #FDF5E6, #ECEFF1, #DCDCDC)";
+        document.getElementById('res-title').innerText = "未完待續者";
+        document.getElementById('res-sub').innerText = "尋找旅程的行者";
+        document.getElementById('res-portrait').innerText = "你的靈魂是一部長篇史詩，正處於光明與陰影交織的創作初期。你不是被寫就的角色，而是那個正在尋找自我旅程的行者。";
+        document.getElementById('res-golden').innerText = "「去尋找吧，你正走在通往自己的路上。」";
+    }
+
+    startQuiz();
 </script>
 </body>
 </html>
