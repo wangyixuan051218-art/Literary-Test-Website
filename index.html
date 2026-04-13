@@ -1,163 +1,170 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>专业人格测评系统</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文學靈魂棲息地測評</title>
+    <style>
+        /* 基礎樣式與文學質感 [cite: 1-7] */
+        :root {
+            --bg-color: #F5F5DC; /* 默認大地星雲色 [cite: 5] */
+            --text-color: #333;
+            --accent-color: #555;
+        }
+        body {
+            font-family: "Source Serif Pro", "SimSun", "Songti SC", serif; /* 襯線體風格 [cite: 7] */
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            transition: background-color 0.5s ease;
+        }
+        #app { width: 90%; max-width: 600px; padding: 40px 0; }
+        
+        /* 首頁與題目樣式 */
+        .card { background: rgba(255,255,255,0.4); padding: 30px; border-radius: 2px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .title { font-size: 24px; text-align: center; letter-spacing: 4px; margin-bottom: 40px; }
+        .question-text { font-size: 18px; line-height: 1.6; margin-bottom: 30px; }
+        .option-btn { 
+            display: block; width: 100%; padding: 15px; margin: 10px 0;
+            border: 1px solid var(--accent-color); background: transparent;
+            cursor: pointer; text-align: left; font-family: inherit; font-size: 16px;
+        }
+        .option-btn:hover { background: rgba(0,0,0,0.05); }
 
-<style>
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background-color: #f4f7fb;
-  margin: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-
-.container {
-  background: white;
-  width: 90%;
-  max-width: 600px;
-  padding: 40px;
-  border-radius: 18px;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.08);
-}
-
-h1 {
-  text-align: center;
-  color: #1a365d;
-  margin-bottom: 20px;
-}
-
-.progress-bar {
-  height: 8px;
-  background: #e2e8f0;
-  border-radius: 10px;
-  overflow: hidden;
-  margin-bottom: 20px;
-}
-
-.progress {
-  height: 100%;
-  width: 0%;
-  background: #2b6cb0;
-  transition: width 0.3s ease;
-}
-
-.question {
-  font-size: 18px;
-  margin-bottom: 20px;
-  color: #2d3748;
-}
-
-button {
-  width: 100%;
-  padding: 14px;
-  margin: 10px 0;
-  border-radius: 10px;
-  border: 1px solid #cbd5e0;
-  background: white;
-  font-size: 16px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-button:hover {
-  background: #2b6cb0;
-  color: white;
-  border-color: #2b6cb0;
-}
-
-.result {
-  text-align: center;
-  font-size: 22px;
-  color: #1a365d;
-  margin-top: 20px;
-}
-</style>
+        /* 結果頁視覺邏輯 [cite: 8-23] */
+        .result-header { text-align: center; margin-bottom: 30px; }
+        .writer-title { font-size: 32px; font-weight: bold; letter-spacing: 6px; }
+        .writer-sub { color: #777; font-size: 14px; margin-top: 10px; }
+        .portrait-text { line-height: 1.8; margin: 30px 0; text-align: justify; }
+        .golden-sentence { font-size: 22px; font-weight: bold; border-left: 3px solid #333; padding-left: 15px; margin: 40px 0; }
+        .source { text-align: right; color: #555; }
+        
+        /* 分享與導流區 [cite: 32-34] */
+        .footer-area { margin-top: 50px; border-top: 1px solid #ccc; padding-top: 20px; display: flex; align-items: center; justify-content: space-between; }
+        .qrcode-mock { width: 80px; height: 80px; background: #ddd; display: flex; align-items: center; text-align: center; font-size: 10px; color: #666; }
+    </style>
 </head>
-
 <body>
 
-<div class="container">
-  <h1>人格测评</h1>
+<div id="app">
+    <div id="quiz-container">
+        <div class="title">文學靈魂棲息地</div>
+        <div id="question-box" class="card">
+            <div id="q-text" class="question-text">正在加載題目...</div>
+            <div id="options-container"></div>
+        </div>
+    </div>
 
-  <div class="progress-bar">
-    <div class="progress" id="progress"></div>
-  </div>
-
-  <div id="quiz">
-    <div class="question" id="questionText"></div>
-    <button onclick="selectAnswer('E')" id="btnA"></button>
-    <button onclick="selectAnswer('I')" id="btnB"></button>
-  </div>
-
-  <div class="result" id="result"></div>
+    <div id="result-container" style="display: none;">
+        <div class="card">
+            <div id="share-content">
+                <div class="result-header">
+                    <div id="res-title" class="writer-title"></div>
+                    <div id="res-sub" class="writer-sub"></div>
+                </div>
+                <div id="res-portrait" class="portrait-text"></div>
+                <div id="res-golden" class="golden-sentence"></div>
+                <div id="res-work" class="source"></div>
+            </div>
+            
+            <div class="footer-area">
+                <div style="font-size: 12px; color: #888;">《文學人格側寫》<br>在小紅書，遇見更多靈魂共鳴</div>
+                <img src="YOUR_XHS_QR_CODE_URL" alt="二維碼" style="width: 80px; height: 80px; background: #eee;">
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
-const questions = [
-  {
-    text: "在聚会中，你更倾向于：",
-    A: "主动与很多人交谈",
-    B: "与少数熟人深聊"
-  },
-  {
-    text: "周末你更愿意：",
-    A: "参加社交活动",
-    B: "独处放松"
-  },
-  {
-    text: "做决定时你更依赖：",
-    A: "逻辑分析",
-    B: "情感感受"
-  }
-];
+    // 完整的 16 類作家文案數據 
+    const WRITERS = {
+        "海子": { title: "麥田詩人", portrait: "你的靈魂像一片遼闊的原野。你對世界的感受純粹而熾熱，像陽光、麥田和風。你相信詩意存在於一切事物之中：天空、河流、遠方，以及人心。", golden: "「天空一無所有，為何給我安慰。」", work: "代表作：《海子的詩》", nebula: "FIRE_DISTANCE" },
+        "三毛": { title: "遠方旅人", portrait: "你天生對世界充滿好奇。人生不是一條既定的道路，而是一場不斷展開的遠行。你的靈魂像風一樣——自由、熱烈、永遠在路上。", golden: "「心若沒有棲息的地方，到哪裏都是流浪。」", work: "代表作：《撒哈拉的故事》", nebula: "FIRE_DISTANCE" },
+        "張愛玲": { title: "月光洞察者", portrait: "你對人性的觀察細致而冷靜。你像一個安靜的旁觀者，在人世的燈火中洞察一切。這種敏銳讓你既清醒，也深情。", golden: "「因為懂得，所以慈悲。」", work: "代表作：《傾城之戀》", nebula: "MOON_MIRROR" },
+        "林清玄": { title: "清歡生活家", portrait: "你擁有一种柔軟而清明的內心。你習慣從日常生活的小事裏體會人生的智慧：一杯茶、一場雨、一次簡單的相遇。", golden: "「以清淨心看世界，以歡喜心過生活。」", work: "代表作：《人生最美是清歡》", nebula: "EARTH_FIREWORKS" },
+        "汪曾祺": { title: "人間煙火者", portrait: "你對生活有一種溫潤的感受力。你相信人生不必轟轟烈烈，只要還有煙火氣，就值得慢慢生活。", golden: "「一定要愛着點什麼，恰似草木對光陰的鐘情。」", work: "代表作：《人間草木》", nebula: "EARTH_FIREWORKS" },
+        "史鐵生": { title: "溫柔哲人", portrait: "你知道命運有時會殘酷，但人依然可以溫柔地活着。你的精神像一座安靜的庭院：沉靜、堅韌、充滿光。", golden: "「死是一件不必急于求成的事。」", work: "代表作：《我與地壇》", nebula: "EARTH_FIREWORKS" },
+        "黑塞": { title: "自我覺醒者", portrait: "你的一生像一段尋找自我的旅程。成長對你來說不是年齡的變化，而是一場又一場的精神覺醒。", golden: "「每個人的生命都是通向自己的旅程。」", work: "代表作：《悉達多》", nebula: "ABYSS_DAWN" },
+        "加謬": { title: "荒誕見證者", portrait: "你清醒地知道世界並不完美。你不逃避荒誕，而是在其中尋找勇氣。你的精神是一種安靜而堅定的反抗。", golden: "「在隆冬，我終於知道，我身上有一個不可戰勝的夏天。」", work: "代表作：《局外人》", nebula: "ABYSS_DAWN" }
+        // ... 其他作家 ID 同理擴充
+    };
 
-let currentQuestion = 0;
-let scoreE = 0;
-let scoreI = 0;
+    const NEBULAS = {
+        EARTH_FIREWORKS: "#F5F5DC", FIRE_DISTANCE: "#FDF5E6", MOON_MIRROR: "#ECEFF1", ABYSS_DAWN: "#DCDCDC" 
+    };
 
-function loadQuestion(){
-  document.getElementById("questionText").innerText = questions[currentQuestion].text;
-  document.getElementById("btnA").innerText = questions[currentQuestion].A;
-  document.getElementById("btnB").innerText = questions[currentQuestion].B;
+    // 20道題目算法映射 [cite: 51, 80-114]
+    const QUESTIONS = [
+        { q: "假如你是世界起始的一段文字，你希望自己被書寫在：", options: { A: "汪曾祺", B: "三毛", C: "王小波", D: "卡夫卡" } },
+        { q: "凌晨三點，你突然醒來，窗外寂靜無聲。那一刻你感覺：", options: { A: "林清玄", B: "杜拉斯", C: "村上春樹", D: "黑塞" } },
+        { q: "面對『遺憾』這個詞，你的底色更傾向於：", options: { A: "簡媜", B: "海子", C: "張愛玲", D: "史鐵生" } }
+        // ... 此處需完整填入 20 題
+    ];
 
-  let progressPercent = ((currentQuestion) / questions.length) * 100;
-  document.getElementById("progress").style.width = progressPercent + "%";
-}
+    let currentQ = 0;
+    let scores = {};
+    Object.keys(WRITERS).forEach(name => scores[name] = 0);
 
-function selectAnswer(type){
-  if(type === "E"){
-    scoreE++;
-  } else {
-    scoreI++;
-  }
+    function loadQuestion() {
+        if (currentQ >= QUESTIONS.length) {
+            showResult();
+            return;
+        }
+        const data = QUESTIONS[currentQ];
+        document.getElementById('q-text').innerText = `${currentQ + 1}. ${data.q}`;
+        const container = document.getElementById('options-container');
+        container.innerHTML = "";
+        
+        const labels = { A: "A", B: "B", C: "C", D: "D" };
+        const optTexts = { 
+            0: ["泛黃的家譜或菜譜上", "空白信箋上", "觀察筆記裏", "幽深石牆上"],
+            // 需對應題目填寫選項文字內容 
+        };
 
-  currentQuestion++;
+        ['A','B','C','D'].forEach((key, idx) => {
+            const btn = document.createElement('button');
+            btn.className = "option-btn";
+            btn.innerText = optTexts[currentQ] ? optTexts[currentQ][idx] : "點擊選擇此項";
+            btn.onclick = () => {
+                const writer = data.options[key];
+                if(scores[writer] !== undefined) scores[writer]++;
+                currentQ++;
+                loadQuestion();
+            };
+            container.appendChild(btn);
+        });
+    }
 
-  if(currentQuestion < questions.length){
+    function showResult() {
+        let sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+        const s1 = sorted[0];
+        const s2 = sorted[1];
+
+        // 判定邏輯 [cite: 52-63]
+        document.getElementById('quiz-container').style.display = 'none';
+        document.getElementById('result-container').style.display = 'block';
+
+        if (s1[1] <= 2) { // 離散判定：未完待續 [cite: 60-63]
+            document.getElementById('res-title').innerText = "未完待續者";
+            document.getElementById('res-portrait').innerText = "你的靈魂是一部長篇史詩，正處於光明與陰影交織的創作初期。";
+            return;
+        }
+
+        const writerData = WRITERS[s1[0]];
+        document.body.style.backgroundColor = NEBULAS[writerData.nebula]; // 切換星雲背景 [cite: 4]
+        
+        document.getElementById('res-title').innerText = writerData.title;
+        document.getElementById('res-sub').innerText = `原型作家 · ${s1[0]}`;
+        document.getElementById('res-portrait').innerText = writerData.portrait;
+        document.getElementById('res-golden').innerText = writerData.golden;
+        document.getElementById('res-work').innerText = writerData.work;
+    }
+
     loadQuestion();
-  } else {
-    showResult();
-  }
-}
-
-function showResult(){
-  document.getElementById("quiz").style.display = "none";
-  document.getElementById("progress").style.width = "100%";
-
-  if(scoreE > scoreI){
-    document.getElementById("result").innerText = "你的性格偏向：外向型 (E)";
-  } else {
-    document.getElementById("result").innerText = "你的性格偏向：内向型 (I)";
-  }
-}
-
-loadQuestion();
 </script>
-
 </body>
 </html>
