@@ -3,18 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>文學靈魂棲息地</title>
+    <title>文学灵魂栖息地</title>
     <style>
         :root {
-            --bg-base: #0f172a; /* 深邃藍黑底色 */
+            --bg-base: #0f172a; 
             --glass-bg: rgba(255, 255, 255, 0.08);
             --text-main: #f8fafc;
             --text-dim: #94a3b8;
-            --accent: #e2e8f0;
         }
 
         body {
-            font-family: "PingFang SC", "Noto Serif SC", "STSong", "Songti SC", serif;
+            font-family: "PingFang SC", "Microsoft YaHei", "Source Han Sans CN", sans-serif;
             background: radial-gradient(circle at 50% 50%, #1e293b 0%, #0f172a 100%);
             background-attachment: fixed;
             color: var(--text-main);
@@ -43,7 +42,19 @@
             border-radius: 32px;
             padding: 45px 35px;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 核心修改：白闪动画，结束后自动回到 100% 状态 */
+        .flash-white {
+            animation: flashAnim 0.4s ease-out;
+        }
+
+        @keyframes flashAnim {
+            0% { background: var(--glass-bg); }
+            40% { background: rgba(255, 255, 255, 0.9); }
+            100% { background: var(--glass-bg); }
         }
 
         .title {
@@ -63,7 +74,6 @@
             text-align: justify;
         }
 
-        /* 現代感膠囊按鈕 */
         .options-list { display: flex; flex-direction: column; gap: 16px; }
 
         .option-btn {
@@ -76,7 +86,7 @@
             color: var(--text-main);
             cursor: pointer;
             font-size: 16px;
-            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            transition: all 0.3s ease;
             text-align: left;
             line-height: 1.4;
         }
@@ -86,10 +96,8 @@
             color: #0f172a;
             box-shadow: 0 0 25px rgba(255, 255, 255, 0.3);
             transform: scale(1.02);
-            border-color: transparent;
         }
 
-        /* 結果頁動畫與樣式 */
         #result-container { display: none; animation: fadeIn 1.2s ease; }
 
         .writer-title { 
@@ -103,38 +111,10 @@
             -webkit-text-fill-color: transparent;
         }
 
-        .res-sub { 
-            text-align: center; 
-            color: var(--text-dim); 
-            margin-bottom: 40px; 
-            letter-spacing: 3px;
-            font-size: 15px;
-        }
-
-        .portrait-text { 
-            font-size: 16px; 
-            line-height: 2.2; 
-            text-align: justify; 
-            margin: 30px 0;
-            white-space: pre-wrap;
-            color: rgba(248, 250, 252, 0.9);
-        }
-
-        .golden-sentence { 
-            font-size: 22px; 
-            font-weight: 500; 
-            margin: 50px 0; 
-            padding-left: 20px;
-            border-left: 3px solid #fff;
-            font-style: italic;
-        }
-
-        .res-work { 
-            text-align: right; 
-            font-size: 14px; 
-            color: var(--text-dim); 
-            margin-top: 20px;
-        }
+        .res-sub { text-align: center; color: var(--text-dim); margin-bottom: 40px; letter-spacing: 3px; font-size: 15px; }
+        .portrait-text { font-size: 16px; line-height: 2.2; text-align: justify; margin: 30px 0; white-space: pre-wrap; color: rgba(248, 250, 252, 0.9); }
+        .golden-sentence { font-size: 22px; font-weight: 500; margin: 50px 0; padding-left: 20px; border-left: 3px solid #fff; font-style: italic; }
+        .res-work { text-align: right; font-size: 14px; color: var(--text-dim); margin-top: 20px; }
 
         .footer-area {
             margin-top: 50px;
@@ -145,19 +125,12 @@
             align-items: center;
         }
 
-        .xhs-qr { 
-            width: 70px; 
-            height: 70px; 
-            border-radius: 12px; 
-            opacity: 0.8;
-            filter: grayscale(0.5);
-        }
+        .xhs-qr { width: 70px; height: 70px; border-radius: 12px; opacity: 0.8; filter: grayscale(0.5); }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
     </style>
 </head>
 <body>
@@ -165,8 +138,8 @@
 <div id="app">
     <div id="quiz-container">
         <div class="title">Literary Soul Habitat</div>
-        <div class="card">
-            <div id="q-text" class="question-text">載入靈魂索引中...</div>
+        <div id="q-card" class="card">
+            <div id="q-text" class="question-text">正在唤醒文学灵魂...</div>
             <div id="options-container" class="options-list"></div>
         </div>
     </div>
@@ -178,10 +151,9 @@
             <div id="res-portrait" class="portrait-text"></div>
             <div id="res-golden" class="golden-sentence"></div>
             <div id="res-work" class="res-work"></div>
-            
             <div class="footer-area">
                 <div style="font-size:11px; color:var(--text-dim); line-height:1.8;">
-                    《文學人格側寫》報告<br>在星雲深處，遇見共鳴的靈魂
+                    《文学人格侧写》报告<br>在星云深处，遇见共鸣的灵魂
                 </div>
                 <img src="qrcode.jpg" class="xhs-qr" alt="QR">
             </div>
@@ -190,48 +162,48 @@
 </div>
 
 <script>
-// 作家數據 (完整保留)
+// 16位作家数据 (简体中文)
 const WRITERS = {
-    "汪曾祺": { name: "人間煙火者", work: "《人間草木》", golden: "「一定要愛著點什麼，恰似草木對光陰的鍾情。」", nebula: "radial-gradient(circle at center, #3d4035 0%, #0f172a 100%)", portrait: "你對生活有一支溫潤的感受力。街巷、食物、人情、舊時光——這些細微而平凡的東西，在你眼中都帶著溫度。你相信人生不必轟轟烈烈，只要還有煙火氣，就值得慢慢生活。" },
-    "三毛": { name: "遠方旅人", work: "《撒哈拉的故事》", golden: "「心若沒有棲息的地方，到哪裡都是流浪。」", nebula: "radial-gradient(circle at center, #5d4037 0%, #1a1a1a 100%)", portrait: "你天生對世界充滿好奇。人生不是一條既定的道路，而是一場不斷展開的遠行。你的靈魂像風一樣自由、熱烈、永遠在路上。" },
-    "張愛玲": { name: "月光洞察者", work: "《傾城之戀》", golden: "「因為懂得，所以慈悲。」", nebula: "radial-gradient(circle at center, #334155 0%, #0f172a 100%)", portrait: "你對人性的觀察細致而冷靜。在人世的燈火中洞察複雜與微妙。這種敏銳讓你既清醒，也深情。" },
-    "海子": { name: "麥田詩人", work: "《海子的詩》", golden: "「天空一無所有，為何給我安慰。」", nebula: "radial-gradient(circle at center, #451a03 0%, #0f172a 100%)", portrait: "你的靈魂像一片遼闊的原野。你相信詩意存在於一切事物之中：天空、河流、遠方，以及人心。情感比語言更遼闊。" },
-    "林清玄": { name: "清歡生活家", work: "《人生最美是清歡》", golden: "「以清淨心看世界，以歡喜心過生活。」", nebula: "radial-gradient(circle at center, #2d312d 0%, #0f172a 100%)", portrait: "你擁有一種柔軟而清明的內心。你習慣從日常生活的小事裡體會人生的智慧。你的氣質像清晨的空氣——溫和、寧靜。" },
-    "史鐵生": { name: "溫柔哲人", work: "《我與地壇》", golden: "「死是一件不必急於求成的事。」", nebula: "radial-gradient(circle at center, #1e293b 0%, #020617 100%)", portrait: "你對生命有一種深沉的理解。你知道命運有時會殘酷，但人依然可以溫柔地活著。你的精神像一座安靜的庭院。" },
-    "黑塞": { name: "自我覺醒者", work: "《悉達多》", golden: "「每個人的生命都是通向自己的旅程。」", nebula: "radial-gradient(circle at center, #2e1065 0%, #0f172a 100%)", portrait: "你的一生像一段尋找自我的旅程。成長對你來說不是年齡的變化，而是一場又一場的精神覺醒。" },
-    "加謬": { name: "荒誕見證者", work: "《局外人》", golden: "「在隆冬，我終於知道，我身上有一個不可戰勝的夏天。」", nebula: "radial-gradient(circle at center, #0f172a 0%, #000 100%)", portrait: "你清醒地知道世界並不完美。你不逃避荒誕，而是在其中尋找勇氣。你的精神是一種安靜而堅定的反抗。" },
-    "卡夫卡": { name: "迷宮思考者", work: "《變形記》", golden: "「我和世界之間隔著一層透明的牆。」", nebula: "radial-gradient(circle at center, #334155 0%, #020617 100%)", portrait: "你對世界的感受常常帶著一點疏離。現實像一座複雜的迷宮，而你總能看見深處隱秘的結構。" },
-    "王小波": { name: "自由思想家", work: "《黃金時代》", golden: "「人的一切痛苦，本質上都是對自己無能的憤怒。」", nebula: "radial-gradient(circle at center, #1e1b4b 0%, #0f172a 100%)", portrait: "你擁有獨立而鋒利的思維。幽默和理性是你的武器。即使面對荒誕的世界，你也能保持清醒和自由。" },
-    "村上春樹": { name: "孤獨漫遊者", work: "《海邊的卡夫卡》", golden: "「當你穿過了暴風雨，你就不再是原來那個人。」", nebula: "radial-gradient(circle at center, #164e63 0%, #0f172a 100%)", portrait: "你並不害怕孤獨。在獨處的時候，你更容易聽見自己的聲音。現實在你眼中總帶著一點夢境感。" },
-    "托爾斯泰": { name: "靈魂史詩者", work: "《戰爭與和平》", golden: "「人生的一切變化，是由光明和陰影構成的。」", nebula: "radial-gradient(circle at center, #422006 0%, #0f172a 100%)", portrait: "你習慣在宏大的世界中思考人生。家庭、歷史、社會——這些複雜關係在你眼中交織成了一部史詩。" },
-    "陀思妥耶夫斯基": { name: "深淵探索者", work: "《罪與罰》", golden: "「人性並不簡單，每個人都在掙扎與尋找之中生活。」", nebula: "radial-gradient(circle at center, #020617 0%, #000 100%)", portrait: "你對靈魂深處的問題非常敏感。你知道人性並不簡單，每個人都在尋找生命真正的救贖與意義。" },
-    "簡媜": { name: "山海書寫者", work: "《水問》", golden: "「文字可以療癒心靈，世界始終保留著溫柔的一面。」", nebula: "radial-gradient(circle at center, #064e3b 0%, #0f172a 100%)", portrait: "你對自然與生命有細膩的感受。你的氣質像山間清晨：寧靜、明亮、充滿呼吸感。" },
-    "杜拉斯": { name: "愛欲敘事者", work: "《情人》", golden: "「愛之於我，不是肌膚之親，不是一蔬一飯。」", nebula: "radial-gradient(circle at center, #4c1d95 0%, #0f172a 100%)", portrait: "你對情感的感知極其敏銳。你的人生像一段緩慢流動的敘事——安靜、迷人，又充滿深情。" },
-    "伍爾夫": { name: "意識漫遊者", work: "《一間自己的房間》", golden: "「生活不是一系列燈塔，而是一圈光暈。」", nebula: "radial-gradient(circle at center, #1e1b4b 0%, #0f172a 100%)", portrait: "你的意識像海潮一樣流動。你對時間、記憶與情緒有著獨特的感知。內心深邃、細膩，又充滿回聲。" }
+    "汪曾祺": { name: "人间烟火者", work: "《人间草木》", golden: "「一定要爱着点什么，恰似草木对光阴的钟情。」", nebula: "radial-gradient(circle at center, #3d4035 0%, #0f172a 100%)", portrait: "你对生活有一支温润的感受力。街巷、食物、人情、旧时光——这些细微而平凡的东西，在你眼中都带着温度。你相信人生不必轰轰烈烈，只要还有烟火气，就值得慢慢生活。" },
+    "三毛": { name: "远方旅人", work: "《撒哈拉的故事》", golden: "「心若没有栖息的地方，到哪里都是流浪。」", nebula: "radial-gradient(circle at center, #5d4037 0%, #1a1a1a 100%)", portrait: "你天生对世界充满好奇。人生不是一条既定的道路，而是一场不断展开的远行。你的灵魂像风一样自由、热烈、永远在路上。" },
+    "张爱玲": { name: "月光洞察者", work: "《倾城之恋》", golden: "「因为懂得，所以慈悲。」", nebula: "radial-gradient(circle at center, #334155 0%, #0f172a 100%)", portrait: "你对人性的观察细致而冷静。在人世的灯火中洞察复杂与微妙。这种敏锐让你既清醒，也深情。" },
+    "海子": { name: "麦田诗人", work: "《海子的诗》", golden: "「天空一无所有，为何给我安慰。」", nebula: "radial-gradient(circle at center, #451a03 0%, #0f172a 100%)", portrait: "你的灵魂像一片辽阔的原野。你相信诗意存在于一切事物之中：天空、河流、远方，以及人心。情感比语言更辽阔。" },
+    "林清玄": { name: "清欢生活家", work: "《人生最美是清欢》", golden: "「以清净心看世界，以欢喜心过生活。」", nebula: "radial-gradient(circle at center, #2d312d 0%, #0f172a 100%)", portrait: "你拥有一种柔软而清明的内心。你习惯从日常生活的小事里体会人生的智慧。你的气质像清晨的空气——温和、宁静。" },
+    "史铁生": { name: "温柔哲人", work: "《我与地坛》", golden: "「死是一件不必急于求成的事。」", nebula: "radial-gradient(circle at center, #1e293b 0%, #020617 100%)", portrait: "你对生命有一种深沉的理解。你知道命运有时会残酷，但人依然可以温柔地活着。你的精神像一座安静的庭院。" },
+    "黑塞": { name: "自我觉醒者", work: "《悉达多》", golden: "「每个人的生命都是通向自己的旅程。」", nebula: "radial-gradient(circle at center, #2e1065 0%, #0f172a 100%)", portrait: "你的一生像一段寻找自我的旅程。成长对你来说不是年龄的变化，而是一场又一场的精神觉醒。" },
+    "加缪": { name: "荒诞见证者", work: "《局外人》", golden: "「在隆冬，我终于知道，我身上有一个不可战胜的夏天。」", nebula: "radial-gradient(circle at center, #0f172a 0%, #000 100%)", portrait: "你清醒地知道世界并不完美。你不逃避荒诞，而是在其中寻找勇气。你的精神是一种安静而坚定的反抗。" },
+    "卡夫卡": { name: "迷宫思考者", work: "《变形记》", golden: "「我和世界之间隔着一层透明的墙。」", nebula: "radial-gradient(circle at center, #334155 0%, #020617 100%)", portrait: "你对世界的感受常常带着一点疏离。现实像一座复杂的迷宫，而你总能看见深处隐秘的结构。" },
+    "王小波": { name: "自由思想家", work: "《黄金时代》", golden: "「人的一切痛苦，本质上都是对自己无能的愤怒。」", nebula: "radial-gradient(circle at center, #1e1b4b 0%, #0f172a 100%)", portrait: "你拥有独立而锋利的思维。幽默和理性是你的武器。即使面对荒诞的世界，你也能保持清醒和自由。" },
+    "村上春树": { name: "孤独漫游者", work: "《海边的卡夫卡》", golden: "「当你穿过了暴风雨，你就不再是原来那个人。」", nebula: "radial-gradient(circle at center, #164e63 0%, #0f172a 100%)", portrait: "你并不害怕孤独。在独处的时候，你更容易听见自己的声音。现实在你眼中总带着一点梦境感。" },
+    "托尔斯泰": { name: "灵魂史诗者", work: "《战争与和平》", golden: "「人生的一切变化，是由光明和阴影构成的。」", nebula: "radial-gradient(circle at center, #422006 0%, #0f172a 100%)", portrait: "你习惯在宏大的世界中思考人生。家庭、历史、社会——这些复杂关系在你眼中交织成了一部史诗。" },
+    "陀思妥耶夫斯基": { name: "深渊探索者", work: "《罪与罚》", golden: "「人性并不简单，每个人都在挣扎与寻找之中生活。」", nebula: "radial-gradient(circle at center, #020617 0%, #000 100%)", portrait: "你对灵魂深处的问题非常敏感。你知道人性并不简单，每个人都在寻找生命真正的救赎与意义。" },
+    "简媜": { name: "山海书写者", work: "《水问》", golden: "「文字可以疗愈心灵，世界始终保留着温柔的一面。」", nebula: "radial-gradient(circle at center, #064e3b 0%, #0f172a 100%)", portrait: "你对自然与生命有细腻的感受。你的气质像山间清晨：宁静、明亮、充满呼吸感。" },
+    "杜拉斯": { name: "爱欲叙事者", work: "《情人》", golden: "「爱之于我，不是肌肤之亲，不是一蔬一饭。」", nebula: "radial-gradient(circle at center, #4c1d95 0%, #0f172a 100%)", portrait: "你对情感的感知极其敏锐。你的人生像一段缓慢流动的叙事——安静、迷人，又充满深情。" },
+    "伍尔夫": { name: "意识漫游者", work: "《一间自己的房间》", golden: "「生活不是一系列灯塔，而是一圈光晕。」", nebula: "radial-gradient(circle at center, #1e1b4b 0%, #0f172a 100%)", portrait: "你的意识像海潮一样流动。你对时间、记忆与情绪有着独特的感知。内心深邃、细腻，又充满回声。" }
 };
 
-// 完整的 20 道題目 (保持不變)
+// 20道测试题 (简体中文)
 const QUESTIONS = [
-    { q: "1. 假如你是世界起始的一段文字，你希望自己被書寫在：", writers: ["汪曾祺","三毛","王小波","卡夫卡"], texts: ["泛黃的家譜或一卷略帶煙火氣的菜譜上", "一張被風吹向遠方的空白信箋上", "手術刀般鋒利的觀察筆記裡", "幽深迷宮轉角處的一面石牆上"] },
-    { q: "2. 凌晨三點，你突然醒來，窗外寂靜無聲。那一刻你感覺：", writers: ["林清玄","杜拉斯","村上春樹","黑塞"], texts: ["萬物皆在夢中，這種平凡的寧靜真好", "想要立刻推門而出，去看看深夜的街道", "世界像是一場荒謬的電影，而我是唯一的觀眾", "感到一種巨大的虛無，仿佛自己被世界遺忘了"] },
-    { q: "3. 面對「遺憾」這個詞，你的底色更傾向於：", writers: ["簡媜","海子","張愛玲","史鐵生"], texts: ["隨風而去，人生最美是清歡", "是一次未完成的流浪，帶著未竟的熾熱", "是一道清醒的裂痕，因為懂得，所以慈悲", "是一場漫長的救贖，死是一件不必急於求成的事"] },
-    { q: "4. 哪種色彩組合最能代表你內心的審美傾向？", writers: ["汪曾祺","海子","張愛玲","加謬"], texts: ["嫩綠與米白，像清晨草木對光陰的鍾情", "金色麥浪與透明的藍天，純粹而遼闊", "冷峻的灰與透徹的紫，帶著高級的疏離", "深邃的墨黑與一抹堅韌的微光，在荒誕中尋勇氣"] },
-    { q: "5. 在人際關係的「迷宮」裡，你通常扮演：", writers: ["林清玄","三毛","張愛玲","陀思妥耶夫斯基"], texts: ["溫潤的協調者，愛著點什麼", "自由的遊走者，到哪裡都是流浪", "冷靜的旁觀者，洞察複雜與微妙", "沉靜的思考者，在孤獨中尋找旅程"] },
-    { q: "6. 如果你有一間「自己的房間」，你最希望窗戶正對著：", writers: ["汪曾祺","三毛","村上春樹","伍爾夫"], texts: ["充滿生活氣息的街巷、老樹和飛鳥", "廣袤無垠、風暴漫天的撒哈拉或原野", "繁華卻又透著冷漠感的都市流光", "一片深邃、充滿回聲的海"] },
-    { q: "7. 面對生活中的「無意義」和「瑣碎」，你會：", writers: ["林清玄","杜拉斯","王小波","卡夫卡"], texts: ["以清淨心看世界，在簡單相遇中生出情味", "想要打破這種沉悶，追求一種極致體驗", "用幽默和理性解構它，認為痛苦源於無能", "覺得現實隔著牆，在困惑中尋找答案"] },
-    { q: "8. 哪種嗅覺記憶最能喚起你的情感？", writers: ["汪曾祺","三毛","張愛玲","黑塞"], texts: ["剛煮好的米飯香氣，或是草木清香", "乾燥的沙漠風味，或是遠方的塵土感", "考究的香水余味，或是舊書頁墨香", "帶有濕氣的泥土味，或是森林冷冽"] },
-    { q: "9. 你如何看待「時間」的流逝？", writers: ["托爾斯泰","三毛","王小波","伍爾夫"], texts: ["時間是溫柔的，它讓一切變化構成了美", "時間是自由的，它見證了每一場遠行", "時間是清醒的，它剝離了華麗留下真相", "時間是流動的光暈，像海潮包裹著記憶"] },
-    { q: "10. 當你遇到讓你心動的事物，你通常會：", writers: ["簡媜","杜拉斯","張愛玲","陀思妥耶夫斯基"], texts: ["安靜地欣賞，以歡喜心過生活", "熱烈地追求，不顧一切地想要交融", "隔著距離端詳，享受那種微妙張力", "陷入長久沉思，理解它背後的命運意義"] },
-    { q: "11. 你的精神世界「違禁詞」是：", writers: ["林清玄","海子","王小波","史鐵生"], texts: ["喧囂", "停滯", "盲從", "淺薄"] },
-    { q: "12. 假設生命是一場敘事，你希望你的敘事風格是：", writers: ["汪曾祺","海子","張愛玲","托爾斯泰"], texts: ["溫潤平淡，如人間草木般自然", "浪漫純粹，如詩歌般熾熱遼闊", "冷峻細緻，如傾城之戀般透徹", "深沉厚重，如史詩般交織光明與陰影"] },
-    { q: "13. 精神疲憊時，哪種方式能真正治癒你？", writers: ["汪曾祺","三毛","王小波","黑塞"], texts: ["整理房間、做頓飯，感受細微溫度", "獨去陌生地方，哪怕只是坐在長椅上", "寫一段文字解構情緒", "讀關於自我覺醒的书，在文字裡重塑自己"] },
-    { q: "14. 如果把靈魂比作自然元素，你覺得是：", writers: ["簡媜","海子","村上春樹","陀思妥耶夫斯基"], texts: ["滋養萬物的細雨或和煦晨光", "掠過麥田的風或燃燒的火焰", "月光下清冷的鏡面或鋒利冰層", "深埋地下的礦石或緩慢流淌的深泉"] },
-    { q: "15. 對於「成功」，你內心最真實的看法是：", writers: ["林清玄","杜拉斯","王小波","史鐵生"], texts: ["能平安、清淨、有情味地度過一生", "走過足夠多地方，擁有足夠多真實體驗", "保持思維獨立自由，沒被愚蠢吞噬", "穿過暴風雨後，認出了那個真正的自己"] },
-    { q: "16. 觀察路邊的老建築，你首先想到：", writers: ["簡媜","三毛","卡夫卡","托爾斯泰"], texts: ["住過的人家，發生過的平凡故事", "它的歷史感和它曾經通往的遠方", "它在現代都市中的格格不入與荒謬", "它見證的命運輪迴與不可戰勝的時光"] },
-    { q: "17. 哪種人際狀態讓你感到最舒適？", writers: ["林清玄","海子","張愛玲","加謬"], texts: ["以平常心相待，如君子之交淡如水", "獨立靈魂，為了愛熱烈相擁", "互相懂得，即便不說話也透著默契", "能在深淵處相逢，共同探討生命意義"] },
-    { q: "18. 選擇一種「非人類」的存在方式：", writers: ["簡媜","三毛","村上春樹","伍爾夫"], texts: ["一株靜默生長、鍾情於光陰的草木", "一隻自由飛翔、沒有棲息地的候鳥", "一面映照出世間複雜慾望的冷鏡", "一個永恆流轉、承載萬物呼吸的海洋"] },
-    { q: "19. 面對世界的「不完美」，你的姿態是：", writers: ["史鐵生","杜拉斯","王小波","加謬"], texts: ["溫柔地活著，尋找生活的小確幸", "離開這裡，去尋找心中的那片淨土", "帶著諷刺的微笑，清醒地揭穿它", "保持安靜堅定的反抗，守護內心的夏天"] },
-    { q: "20. 總結你的靈魂傾向，它棲息在：", writers: ["林清玄","海子","村上春樹","托爾斯泰"], texts: ["充滿了清歡、煙火與平常心的山間街巷", "遼闊的麥田、熱烈的遠方與燃燒詩行裡", "清醒月光下、獨立高台或疏離街道旁", "自我的旅程中、深邃庭院或思考迷宮中"] }
+    { q: "1. 假如你是世界起始的一段文字，你希望自己被书写在：", writers: ["汪曾祺","三毛","王小波","卡夫卡"], texts: ["泛黄的家谱或一卷略带烟火气的菜谱上", "一张被风吹向远方的空白信笺上", "手术刀般锋利的观察笔记里", "幽深迷宫转角处的一面石墙上"] },
+    { q: "2. 凌晨三点，你突然醒来，窗外寂静无声。那一刻你感觉：", writers: ["林清玄","杜拉斯","村上春树","黑塞"], texts: ["万物皆在梦中，这种平凡的宁静真好", "想要立刻推门而出，去看看深夜的街道", "世界像是一场荒谬的电影，而我是唯一的观众", "感到一种巨大的虚无，仿佛自己被世界遗忘了"] },
+    { q: "3. 面对“遗憾”这个词，你的底色更倾向于：", writers: ["简媜","海子","张爱玲","史铁生"], texts: ["随风而去，人生最美是清欢", "是一次未完成的流浪，带着未竟的炽热", "是一道清醒的裂痕，因为懂得，所以慈悲", "是一场漫长的救赎，死是一件不必急于求成的事"] },
+    { q: "4. 哪种色彩组合最能代表你内心的审美倾向？", writers: ["汪曾祺","海子","张爱玲","加缪"], texts: ["嫩绿与米白，像清晨草木对光阴的钟情", "金色麦浪与透明的蓝天，纯粹而辽阔", "冷峻的灰与透彻的紫，带着高级的疏离", "深邃的墨黑与一抹坚韧的微光，在荒诞中寻勇气"] },
+    { q: "5. 在人际关系的“迷宫”里，你通常扮演：", writers: ["林清玄","三毛","张爱玲","陀思妥耶夫斯基"], texts: ["温润的协调者，爱着点什么", "自由的游走者，到哪里都是流浪", "冷静的旁观者，洞察复杂与微妙", "沉静的思考者，在孤独中寻找旅程"] },
+    { q: "6. 如果你有一间“自己的房间”，你最希望窗户正对着：", writers: ["汪曾祺","三毛","村上春树","伍爾夫"], texts: ["充满生活气息的街巷、老树和飞鸟", "广袤无垠、风暴漫天的撒哈拉或原野", "繁华却又透着冷漠感的都市流光", "一片深邃、充满回声的海"] },
+    { q: "7. 面對生活中的“無意義”和“瑣碎”，你會：", writers: ["林清玄","杜拉斯","王小波","卡夫卡"], texts: ["以清淨心看世界，在簡單相遇中生出情味", "想要打破這種沉悶，追求一種極致體驗", "用幽默和理性解構它，認為痛苦源於無能", "覺得現實隔著牆，在困惑中尋找答案"] },
+    { q: "8. 哪种嗅觉记忆最能唤起你的情感？", writers: ["汪曾祺","三毛","张爱玲","黑塞"], texts: ["刚煮好的米饭香气，或是草木清香", "干燥的沙漠风味，或是远方的尘土感", "考究的香水余味，或是旧书页墨香", "带有湿气的泥土味，或是森林冷冽"] },
+    { q: "9. 你如何看待“时间”的流逝？", writers: ["托尔斯泰","三毛","王小波","伍爾夫"], texts: ["时间是温柔的，它让一切变化构成了美", "时间是自由的，它见证了每一场远行", "时间是清醒的，它剥离了华丽留下真相", "时间是流动的光晕，像海潮包裹着记忆"] },
+    { q: "10. 当你遇到让你心动的事物，你通常会：", writers: ["简媜","杜拉斯","张爱玲","陀思妥耶夫斯基"], texts: ["安静地欣赏，以欢喜心过生活", "热烈地追求，不顾一切地想要交融", "隔着距离端详，享受那种微妙张力", "陷入长久沉思，理解它背后的命运意义"] },
+    { q: "11. 你的精神世界“违禁词”是：", writers: ["林清玄","海子","王小波","史铁生"], texts: ["喧嚣", "停滞", "盲从", "浅薄"] },
+    { q: "12. 假设生命是一场叙事，你希望你的叙事风格是：", writers: ["汪曾祺","海子","张爱玲","托尔斯泰"], texts: ["温润平淡，如人间草木般自然", "浪漫纯粹，如诗歌般炽热辽阔", "冷峻细致，如倾城之恋般透彻", "深沉厚重，如史诗般交织光明与阴影"] },
+    { q: "13. 精神疲惫时，哪种方式能真正治愈你？", writers: ["汪曾祺","三毛","王小波","黑塞"], texts: ["整理房间、做顿饭，感受细微温度", "独去陌生地方，哪怕只是坐在长椅上", "写一段文字解构情绪", "读关于自我觉醒的书，在文字里重塑自己"] },
+    { q: "14. 如果把灵魂比作自然元素，你觉得是：", writers: ["简媜","海子","村上春树","陀思妥耶夫斯基"], texts: ["滋养万物的细雨或和煦晨光", "掠过麦田的风或燃烧的火焰", "月光下清冷的镜面或锋利冰层", "深埋地下的矿石或缓慢流淌的深泉"] },
+    { q: "15. 对于“成功”，你内心最真实的看法是：", writers: ["林清玄","杜拉斯","王小波","史铁生"], texts: ["能平安、清净、有情味地度过一生", "走过足够多地方，拥有足够多真实体验", "保持思维独立自由，没被愚蠢吞噬", "穿过暴风雨后，认出了那个真正的自己"] },
+    { q: "16. 观察路边的老建筑，你首先想到：", writers: ["简媜","三毛","卡夫卡","托尔斯泰"], texts: ["住过的人家，发生过的平凡故事", "它的历史感和它曾经通往的远方", "它在现代都市中的格格不入与荒谬", "它见证的命运轮回与不可战胜的时光"] },
+    { q: "17. 哪种人际状态让你感到最舒适？", writers: ["林清玄","海子","张爱玲","加缪"], texts: ["以平常心相待，如君子之交淡如水", "独立灵魂，为了爱热烈相拥", "互相懂得，即便不说话也透着默契", "能在深渊处相逢，共同探讨生命意义"] },
+    { q: "18. 选择一种“非人类”的存在方式：", writers: ["简媜","三毛","村上春树","伍爾夫"], texts: ["一株静默生长、钟情于光阴的草木", "一只自由飞翔、没有栖息地的候鸟", "一面映照出世间复杂欲望的冷镜", "一个永恒流转、承载万物呼吸的海洋"] },
+    { q: "19. 面对世界的“不完美”，你的姿态是：", writers: ["史铁生","杜拉斯","王小波","加缪"], texts: ["温柔地活着，寻找生活的小确幸", "离开这里，去寻找心中的那片净土", "带着讽刺的微笑，清醒地揭穿它", "保持安静坚定的反抗，守护内心的夏天"] },
+    { q: "20. 总结你的灵魂倾向，它栖息在：", writers: ["林清玄","海子","村上春树","托尔斯泰"], texts: ["充满了清欢、烟火与平常心的山间街巷", "辽阔的麦田、热烈的远方与燃烧诗行里", "清醒月光下、独立高台或疏离街道旁", "自我的旅程中、深邃庭院或思考迷宫中"] }
 ];
 
 let step = 0;
@@ -244,20 +216,30 @@ function showQuestion() {
         return;
     }
     const qData = QUESTIONS[step];
-    document.getElementById('q-text').innerText = qData.q;
-    const container = document.getElementById('options-container');
-    container.innerHTML = "";
-    qData.texts.forEach((txt, i) => {
-        const btn = document.createElement('button');
-        btn.className = "option-btn";
-        btn.innerText = txt;
-        btn.onclick = () => {
-            scores[qData.writers[i]]++;
-            step++;
-            showQuestion();
-        };
-        container.appendChild(btn);
-    });
+    const qCard = document.getElementById('q-card');
+    
+    // 触发白闪动画
+    qCard.classList.remove('flash-white');
+    void qCard.offsetWidth; // 触发强制重绘，确保动画可以再次执行
+    qCard.classList.add('flash-white');
+
+    // 在闪烁中途更新文字
+    setTimeout(() => {
+        document.getElementById('q-text').innerText = qData.q;
+        const container = document.getElementById('options-container');
+        container.innerHTML = "";
+        qData.texts.forEach((txt, i) => {
+            const btn = document.createElement('button');
+            btn.className = "option-btn";
+            btn.innerText = txt;
+            btn.onclick = () => {
+                scores[qData.writers[i]]++;
+                step++;
+                showQuestion();
+            };
+            container.appendChild(btn);
+        });
+    }, 150);
 }
 
 function showResult() {
@@ -268,7 +250,6 @@ function showResult() {
     document.getElementById('quiz-container').style.display = 'none';
     document.getElementById('result-container').style.display = 'block';
 
-    // 嚴格計分邏輯
     if(s1[1] <= 2) {
         renderSeeker();
     } else if (s1[1] === s2[1]) {
@@ -292,19 +273,19 @@ function renderDual(n1, n2) {
     const d1 = WRITERS[n1];
     const d2 = WRITERS[n2];
     document.body.style.background = d1.nebula;
-    document.getElementById('res-title').innerText = "混合靈魂";
-    document.getElementById('res-sub').innerText = `${n1} 與 ${n2} 的共鳴`;
-    document.getElementById('res-portrait').innerText = `你擁有多重的精神底色。\n\n一方面，${d1.portrait}\n\n另一方面，${d2.portrait}`;
+    document.getElementById('res-title').innerText = "混合灵魂";
+    document.getElementById('res-sub').innerText = `${n1} 与 ${n2} 的共鸣`;
+    document.getElementById('res-portrait').innerText = `你拥有多重的精神底色。\n\n一方面，${d1.portrait}\n\n另一方面，${d2.portrait}`;
     document.getElementById('res-golden').innerText = `${d1.golden}\n${d2.golden}`;
-    document.getElementById('res-work').innerText = `相關作品：${d1.work}、${d2.work}`;
+    document.getElementById('res-work').innerText = `相关作品：${d1.work}、${d2.work}`;
 }
 
 function renderSeeker() {
     document.body.style.background = "radial-gradient(circle at center, #1e293b 0%, #0f172a 100%)";
-    document.getElementById('res-title').innerText = "未完待續者";
-    document.getElementById('res-sub').innerText = "尋路的人";
-    document.getElementById('res-portrait').innerText = "你的靈魂是一部長篇史詩，正處於光明與陰影交織的創作初期。你不是被寫就的角色，而是那個正在尋找自我旅程的行者。";
-    document.getElementById('res-golden').innerText = "「去尋找吧，你正走在通往自己的路上。」";
+    document.getElementById('res-title').innerText = "未完待续者";
+    document.getElementById('res-sub').innerText = "寻路的人";
+    document.getElementById('res-portrait').innerText = "你的灵魂是一部长篇史诗，正处于光明与阴影交织的创作初期。你不是被写就的角色，而是那个正在寻找自我旅途的行者。";
+    document.getElementById('res-golden').innerText = "「去寻找吧，你正走在通往自己的路上。」";
 }
 
 showQuestion();
