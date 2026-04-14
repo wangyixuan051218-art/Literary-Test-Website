@@ -66,7 +66,6 @@ const WRITERS = {
     "伍尔夫": { name: "意识漫游者", work: "《一间自己的房间》", golden: "「生活不是一系列灯塔，而是一圈光晕。」", nebula: "#DCDCDC", portrait: "你的意识像海潮一样流动。你对时间、记忆与情绪有着独特的感知。内心深邃、细腻，又充满回声。" }
 };
 
-// 完整的 20 道题目数据
 const QUESTIONS = [
     { q: "1. 假如你是世界起始的一段文字，你希望自己被书写在：", writers: ["汪曾祺","三毛","王小波","卡夫卡"], texts: ["泛黄的家谱或一卷略带烟火气的菜谱上", "一张被风吹向远方的空白信笺上", "手术刀般锋利的观察笔记里", "幽深迷宫转角处的一面石墙上"] },
     { q: "2. 凌晨三点，你突然醒来，窗外寂静无声。那一刻你感觉：", writers: ["林清玄","杜拉斯","村上春树","黑塞"], texts: ["万物皆在梦中，这种平凡的宁静真好", "想要立刻推门而出，去看看深夜的街道", "世界像是一场荒谬的电影，而我是唯一的观众", "感到一种巨大的虚无，仿佛自己被世界遗忘了"] },
@@ -118,18 +117,21 @@ function showQuestion() {
 
 function showResult() {
     let sorted = Object.entries(scores).sort((a,b) => b[1]-a[1]);
-    const s1 = sorted[0];
-    const s2 = sorted[1];
+    const s1 = sorted[0]; // 最高分作家
+    const s2 = sorted[1]; // 第二高分作家
     
     document.getElementById('quiz-container').style.display = 'none';
     document.getElementById('result-container').style.display = 'block';
 
-    // 逻辑：离散判定
-    if(s1[1] <= 3) {
+    // 优化的严格判定逻辑：
+    if(s1[1] <= 2) {
+        // 情况1：得分极其分散（连一个拿3分的作家都没有），触发未完待续者
         renderSeeker();
-    } else if (s1[1] - s2[1] <= 1) {
+    } else if (s1[1] === s2[1]) {
+        // 情况2：混合灵魂。只有当两个作家【完全同分】时才触发，提高稀缺度
         renderDual(s1[0], s2[0]);
     } else {
+        // 情况3：正常结果。只要第一名比第二名多1分，就判定为单一灵魂
         renderSingle(s1[0]);
     }
 }
@@ -161,6 +163,7 @@ function renderSeeker() {
     document.getElementById('res-sub').innerText = "寻路的人";
     document.getElementById('res-portrait').innerText = "你的灵魂是一部长篇史诗，正处于光明与阴影交织的创作初期。你不是被写就的角色，而是那个正在寻找自我旅程的行者。";
     document.getElementById('res-golden').innerText = "「去寻找吧，你正走在通往自己的路上。」";
+    document.getElementById('res-work').innerText = "";
 }
 
 showQuestion();
